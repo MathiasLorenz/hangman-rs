@@ -1,3 +1,7 @@
+use hangman_rs::*;
+
 fn main() {
-    println!("Hello, world!");
+    let hangman = Hangman::new(String::from("Wordyword"));
+
+    play_hangman(hangman);
 }
