@@ -1,7 +1,7 @@
 use hangman_rs::*;
 
 fn main() {
-    let hangman = Hangman::new(String::from("Wordyword"));
+    let mut hangman = Hangman::new("oo", 8);
 
-    play_hangman(hangman);
+    play_hangman(&mut hangman);
 }
