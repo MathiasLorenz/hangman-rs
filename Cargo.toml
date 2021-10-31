@@ -7,5 +7,7 @@ edition = "2018"
 
 [dependencies]
 
-[dev-dependencies]
-cargo-husky = "1.5.0"
+[dev-dependencies.cargo-husky]
+version = "^1.5"
+default-features = false
+features = ["precommit-hook", "prepush-hook", "run-cargo-test", "run-cargo-clippy", "run-cargo-fmt"]
