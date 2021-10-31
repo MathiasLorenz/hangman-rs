@@ -33,6 +33,27 @@ impl Hangman {
         }
     }
 
+    pub fn play(&mut self) {
+        println!("We are about to play hangman!");
+        self.print_word();
+        let mut read_char: Option<char>;
+        while !self.did_win() && !self.is_dead() {
+            println!("Please guess a letter: ");
+            read_char = None;
+            while read_char.is_none() {
+                read_char = read_char_from_stdin();
+            }
+
+            self.guess(read_char.unwrap());
+        }
+
+        if self.did_win() {
+            println!("Weee you won!");
+        } else {
+            println!("You lost :((((");
+        }
+    }
+
     fn guess(&mut self, guess: char) {
         let mut did_guess = false;
         for c in self.word.iter_mut() {
@@ -71,27 +92,6 @@ impl Hangman {
             }
         }
         println!("{}", word);
-    }
-}
-
-pub fn play_hangman(hangman: &mut Hangman) {
-    println!("We are about to play hangman!");
-    hangman.print_word();
-    let mut read_char: Option<char>;
-    while !hangman.did_win() && !hangman.is_dead() {
-        println!("Please guess a letter: ");
-        read_char = None;
-        while read_char.is_none() {
-            read_char = read_char_from_stdin();
-        }
-
-        hangman.guess(read_char.unwrap());
-    }
-
-    if hangman.did_win() {
-        println!("Weee you won!");
-    } else {
-        println!("You lost :((((");
     }
 }
 
