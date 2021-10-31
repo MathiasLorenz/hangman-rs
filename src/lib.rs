@@ -33,13 +33,21 @@ impl Hangman {
     }
 
     fn guess(&mut self, guess: char) {
+        let mut did_guess = false;
         for c in self.word.iter_mut() {
             if c.letter == guess {
-                c.status = GuessedStatus::Guessed
+                c.status = GuessedStatus::Guessed;
+                did_guess = true;
             }
         }
 
-        self.num_guesses -= 1;
+        if did_guess {
+            println!("Nice, you guessed a letter! Therefore you did not use a guess.");
+        } else {
+            println!("Damn, you did not guess a letter and you lose a guess :(");
+            self.num_guesses -= 1;
+        }
+
         println!("You now have {} guesses left", self.num_guesses);
 
         self.print_word();
