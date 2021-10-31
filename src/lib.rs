@@ -1,3 +1,5 @@
+use std::io;
+
 pub struct Hangman {
     word: Vec<LetterStatus>,
     num_guesses: u8,
@@ -66,9 +68,15 @@ impl Hangman {
 pub fn play_hangman(hangman: &mut Hangman) {
     println!("We are about to play hangman!");
     hangman.print_word();
+    let mut read_char: Option<char>;
     while !hangman.did_win() && !hangman.is_dead() {
-        print!("Please guess a letter: ");
-        hangman.guess('o');
+        println!("Please guess a letter: ");
+        read_char = None;
+        while let None = read_char {
+            read_char = read_char_from_stdin();
+        }
+    
+        hangman.guess(read_char.unwrap());
     }
 
     if hangman.did_win() {
@@ -76,4 +84,15 @@ pub fn play_hangman(hangman: &mut Hangman) {
     } else {
         println!("You lost :((((");
     }
+}
+
+fn read_char_from_stdin() -> Option<char> {
+    let mut buffer = String::new();
+    let stdin = io::stdin();
+    if let Err(_) = stdin.read_line(&mut buffer) {
+        println!("You inputted something wrong, try again!");
+        return None
+    }
+    let c = buffer.chars().next()?;
+    Some(c)
 }
