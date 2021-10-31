@@ -83,7 +83,7 @@ pub fn play_hangman(hangman: &mut Hangman) {
         while let None = read_char {
             read_char = read_char_from_stdin();
         }
-    
+
         hangman.guess(read_char.unwrap());
     }
 
@@ -99,7 +99,7 @@ fn read_char_from_stdin() -> Option<char> {
     let stdin = io::stdin();
     if let Err(_) = stdin.read_line(&mut buffer) {
         println!("You inputted something wrong, try again!");
-        return None
+        return None;
     }
     let c = buffer.chars().next()?;
     Some(c)
