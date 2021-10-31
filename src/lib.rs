@@ -5,7 +5,8 @@ use std::io;
 
 pub struct Hangman {
     word: Vec<LetterStatus>,
-    num_guesses: u8,
+    num_guesses: u8, // Todo: Make this optional. Either directly (Option<T>)
+                     //       or derive_builder/typed_builder crate
 }
 
 struct LetterStatus {
