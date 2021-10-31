@@ -19,6 +19,7 @@ enum GuessedStatus {
 impl Hangman {
     pub fn new(word: &str, num_guesses: u8) -> Self {
         let w: Vec<_> = word
+            .to_ascii_lowercase()
             .chars()
             .map(|c| LetterStatus {
                 letter: c,
@@ -103,4 +104,32 @@ fn read_char_from_stdin() -> Option<char> {
     }
     let c = buffer.chars().next()?;
     Some(c)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hangman_new_simple_word_is_read_properly() {
+        let word = "sup";
+        let hangman = Hangman::new(word, 2);
+        let hangman_word = extract_word_from_letterstatus(hangman.word);
+
+        assert_eq!(word, hangman_word);
+    }
+
+    #[test]
+    fn hangman_new_word_with_uppercase_is_translated_to_lowercase() {
+        let word = "hellOwoM";
+        let word_lowercase = "hellowom";
+        let hangman = Hangman::new(word, 2);
+        let hangman_word = extract_word_from_letterstatus(hangman.word);
+
+        assert_eq!(word_lowercase, hangman_word);
+    }
+
+    fn extract_word_from_letterstatus(letter_status: Vec<LetterStatus>) -> String {
+        letter_status.into_iter().map(|x| x.letter).collect()
+    }
 }
