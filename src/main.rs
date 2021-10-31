@@ -1,7 +1,8 @@
 use hangman_rs::*;
 
 fn main() {
-    let mut hangman = Hangman::new("DALLER", 3);
+    let secret_word = read_secret_word("secret_word.txt").unwrap();
+    let mut hangman = Hangman::new(&secret_word, 3);
 
     hangman.play();
 }
