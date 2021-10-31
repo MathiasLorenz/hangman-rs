@@ -80,7 +80,7 @@ pub fn play_hangman(hangman: &mut Hangman) {
     while !hangman.did_win() && !hangman.is_dead() {
         println!("Please guess a letter: ");
         read_char = None;
-        while let None = read_char {
+        while read_char.is_none() {
             read_char = read_char_from_stdin();
         }
 
@@ -97,7 +97,7 @@ pub fn play_hangman(hangman: &mut Hangman) {
 fn read_char_from_stdin() -> Option<char> {
     let mut buffer = String::new();
     let stdin = io::stdin();
-    if let Err(_) = stdin.read_line(&mut buffer) {
+    if stdin.read_line(&mut buffer).is_err() {
         println!("You inputted something wrong, try again!");
         return None;
     }
