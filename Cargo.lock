@@ -3,6 +3,12 @@
 version = 3
 
 [[package]]
+name = "arguably"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6ba4866cb027954aceb8744ec89b222f20c78740f8a2e588400be6c7726f0216"
+
+[[package]]
 name = "cargo-husky"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -12,5 +18,6 @@ checksum = "7b02b629252fe8ef6460461409564e2c21d0c8e77e0944f3d189ff06c4e932ad"
 name = "hangman-rs"
 version = "0.1.0"
 dependencies = [
+ "arguably",
  "cargo-husky",
 ]

@@ -6,6 +6,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+arguably = "^2.0.1"
 
 [dev-dependencies.cargo-husky]
 version = "^1.5"
