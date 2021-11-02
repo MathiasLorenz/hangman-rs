@@ -21,14 +21,13 @@ enum GuessedStatus {
 
 impl Hangman {
     pub fn new(word: &str, num_guesses: u8) -> Self {
-        // This will make us iterate over word twice but should be more than fine.
+        let word = word.to_ascii_lowercase();
         // Did create a solution with .map() and .scan() in the below but that was super ugly
-        if word.chars().any(|c| !c.is_alphabetic()) {
+        if !word.chars().all(|c| matches!(c, 'a'..='z')) {
             panic!("Cannot play hangman with characters that are not letters :(");
         }
 
         let w: Vec<_> = word
-            .to_ascii_lowercase()
             .chars()
             .map(|c| LetterStatus {
                 letter: c,
@@ -161,9 +160,16 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn hangman_new_with_non_alphabetic_panics() {
+    fn hangman_new_with_digit_panics() {
         let word = "2";
         let _ = Hangman::new(word, 2);
+    }
+
+    #[test]
+    #[should_panic]
+    fn hangman_new_strange_unicode_alphabetic_panics() {
+        let word = "こ";
+        Hangman::new(word, 2);
     }
 
     fn extract_word_from_letterstatus(letter_status: Vec<LetterStatus>) -> String {
