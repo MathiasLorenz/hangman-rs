@@ -170,4 +170,26 @@ mod tests {
     fn extract_word_from_letterstatus(letter_status: Vec<LetterStatus>) -> String {
         letter_status.into_iter().map(|x| x.letter).collect()
     }
+
+    #[test]
+    fn hangman_guess_correct_num_guesses_unchanged() {
+        let word = "abc";
+        let num_guesses = 2;
+        let mut hangman = Hangman::new(word, 2);
+
+        hangman.guess('a');
+
+        assert_eq!(hangman.num_guesses, num_guesses);
+    }
+
+    #[test]
+    fn hangman_guess_incorrect_num_guesses_minus_1() {
+        let word = "abc";
+        let num_guesses = 2;
+        let mut hangman = Hangman::new(word, 2);
+
+        hangman.guess('d');
+
+        assert_eq!(hangman.num_guesses, num_guesses - 1);
+    }
 }
