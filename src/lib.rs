@@ -45,7 +45,7 @@ impl Hangman {
 
     pub fn play(&mut self) {
         println!("We are about to play hangman!");
-        self.print_word();
+        println!("Your word to guess has {} letters", self.word.len());
         let mut read_char: Option<char>;
         while !self.did_win() && !self.is_dead() {
             println!("Please guess a letter: ");
@@ -82,7 +82,7 @@ impl Hangman {
 
         println!("You now have {} guesses left", self.num_guesses);
 
-        self.print_word();
+        println!("{}", self.construct_obfuscated_word());
     }
 
     fn is_dead(&self) -> bool {
@@ -93,7 +93,7 @@ impl Hangman {
         self.word.iter().all(|l| l.status == GuessedStatus::Guessed)
     }
 
-    fn print_word(&self) {
+    fn construct_obfuscated_word(&self) -> String {
         let mut word = String::new();
         for l in self.word.iter() {
             match l.status {
@@ -101,7 +101,7 @@ impl Hangman {
                 GuessedStatus::NotGuessed => word.push('*'),
             }
         }
-        println!("{}", word);
+        word
     }
 }
 
@@ -191,5 +191,16 @@ mod tests {
         hangman.guess('d');
 
         assert_eq!(hangman.num_guesses, num_guesses - 1);
+    }
+
+    #[test]
+    fn hangman_construct_obfuscated_word() {
+        let word = "abc";
+        let mut hangman = Hangman::new(word, 2);
+
+        hangman.guess('a');
+        hangman.guess('c');
+
+        assert_eq!(hangman.construct_obfuscated_word(), "a*c");
     }
 }
