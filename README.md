@@ -8,7 +8,5 @@ You need to guess the secret word in less than `num_guesses` guesses. Play by in
 
 ## Todo
 
-- Make `num_guesses` optional
-- Make number of guesses input to the program.
-  - In `secret_word.txt` file?
-  - As program input (use `clap/arguably` or similar?)
+- Make guess reject non-valid guesses
+- Update structure, move Hangman out of lib.rs?
