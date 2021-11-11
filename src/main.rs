@@ -1,5 +1,6 @@
 use arguably::ArgParser;
-use hangman_rs::*;
+mod hangman;
+mod utils;
 
 fn main() {
     let mut args_parser = ArgParser::new()
@@ -16,8 +17,8 @@ fn main() {
         .parse()
         .expect("Could not parse num_guesses from input");
 
-    let secret_word = read_secret_word("secret_word.txt").unwrap();
-    let mut hangman = Hangman::new(&secret_word, num_guesses);
+    let secret_word = utils::read_secret_word("secret_word.txt").unwrap();
+    let mut hangman = hangman::Hangman::new(&secret_word, num_guesses);
 
     hangman.play();
 }
