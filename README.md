@@ -8,5 +8,4 @@ You need to guess the secret word in less than `num_guesses` guesses. Play by in
 
 ## Todo
 
-- Make guess reject non-valid guesses
-- Update structure, move Hangman out of lib.rs?
+- Create internal struct in hangman for lowercase ascii letters? S.t. inside hangman these are always valid. Can bubble out errors?
