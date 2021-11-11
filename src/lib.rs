@@ -63,6 +63,12 @@ impl Hangman {
     }
 
     fn guess(&mut self, guess: char) {
+        let guess = guess.to_ascii_lowercase();
+        if !matches!(guess, 'a'..='z') {
+            println!("You guess an incorrect char, please guess something a through z");
+            return;
+        }
+
         let mut did_guess = false;
         for c in self.word.iter_mut() {
             if c.letter == guess {
@@ -194,8 +200,38 @@ mod tests {
         let mut hangman = Hangman::new(word, 2);
 
         hangman.guess('d');
-
         assert_eq!(hangman.num_guesses, num_guesses - 1);
+    }
+
+    #[test]
+    fn hangman_guess_invalid_char_no_guess_used() {
+        let word = "abc";
+        let num_guesses = 2;
+        let mut hangman = Hangman::new(word, num_guesses);
+
+        hangman.guess('[');
+        assert_eq!(hangman.num_guesses, num_guesses);
+    }
+
+    #[test]
+    fn hangman_guess_strange_unicode_char_no_guess_used() {
+        let word = "abc";
+        let num_guesses = 2;
+        let mut hangman = Hangman::new(word, num_guesses);
+
+        hangman.guess('こ');
+        assert_eq!(hangman.num_guesses, num_guesses);
+    }
+
+    #[test]
+    fn hangman_guess_uppercase_char_turned_lowercase_and_guessed() {
+        let word = "abc";
+        let num_guesses = 2;
+        let mut hangman = Hangman::new(word, num_guesses);
+
+        hangman.guess('A');
+        assert_eq!(hangman.num_guesses, num_guesses);
+        assert_eq!(hangman.construct_obfuscated_word(), "a**");
     }
 
     #[test]
