@@ -1,4 +1,4 @@
-use crate::utils::*;
+use crate::utils::{read_char_from_stdin, LowercaseAscii};
 
 pub struct Hangman {
     word: Vec<LetterStatus>,
@@ -51,7 +51,7 @@ impl Hangman {
 
             let read_char = read_char.unwrap();
             match LowercaseAscii::try_from(read_char) {
-                Ok(read_char) => self.guess(read_char),
+                Ok(read_char) => self.guess(&read_char),
                 Err(err) => println!("{}", err),
             }
         }
@@ -63,9 +63,9 @@ impl Hangman {
         }
     }
 
-    fn guess(&mut self, guess: LowercaseAscii) {
+    fn guess(&mut self, guess: &LowercaseAscii) {
         let mut did_guess = false;
-        for c in self.word.iter_mut() {
+        for c in &mut self.word {
             if c.letter == guess.get_value() {
                 c.status = GuessedStatus::Guessed;
                 did_guess = true;
@@ -94,7 +94,7 @@ impl Hangman {
 
     fn construct_obfuscated_word(&self) -> String {
         let mut word = String::new();
-        for l in self.word.iter() {
+        for l in &self.word {
             match l.status {
                 GuessedStatus::Guessed => word.push(l.letter),
                 GuessedStatus::NotGuessed => word.push('*'),
@@ -152,7 +152,7 @@ mod tests {
         let mut hangman = Hangman::new(word, 2);
         let guess = LowercaseAscii::try_from('a').unwrap();
 
-        hangman.guess(guess);
+        hangman.guess(&guess);
 
         assert_eq!(hangman.num_guesses, num_guesses);
     }
@@ -164,7 +164,7 @@ mod tests {
         let mut hangman = Hangman::new(word, 2);
         let guess = LowercaseAscii::try_from('d').unwrap();
 
-        hangman.guess(guess);
+        hangman.guess(&guess);
         assert_eq!(hangman.num_guesses, num_guesses - 1);
     }
 }
