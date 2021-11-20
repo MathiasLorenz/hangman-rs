@@ -34,3 +34,55 @@ pub fn read_secret_word(filename: &str) -> Result<String, Box<dyn error::Error>>
         .ok_or(NoWordFound)?;
     Ok(word.to_owned())
 }
+
+pub struct LowercaseAscii {
+    value: char,
+}
+
+impl TryFrom<char> for LowercaseAscii {
+    type Error = &'static str;
+
+    fn try_from(value: char) -> Result<Self, Self::Error> {
+        let value = value.to_ascii_lowercase();
+        if matches!(value, 'a'..='z') {
+            Ok(Self { value })
+        } else {
+            Err("Input has to be valid char a through z")
+        }
+    }
+}
+
+impl LowercaseAscii {
+    pub fn get_value(&self) -> char {
+        self.value
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::LowercaseAscii;
+
+    #[test]
+    fn lowercase_ascii_a_is_accepted() {
+        let result = LowercaseAscii::try_from('a');
+        assert_eq!(result.is_ok(), true);
+    }
+
+    #[test]
+    fn lowercase_ascii_bracket_is_not_accepted() {
+        let result = LowercaseAscii::try_from('[');
+        assert_eq!(result.is_err(), true);
+    }
+
+    #[test]
+    fn lowercase_ascii_strange_unicode_is_not_accepted() {
+        let result = LowercaseAscii::try_from('こ');
+        assert_eq!(result.is_err(), true);
+    }
+
+    #[test]
+    fn lowercase_ascii_uppercase_a_is_lowercased_and_accepted() {
+        let result = LowercaseAscii::try_from('A');
+        assert_eq!(result.is_ok(), true);
+    }
+}
