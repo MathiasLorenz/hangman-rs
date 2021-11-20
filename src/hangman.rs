@@ -167,4 +167,21 @@ mod tests {
         hangman.guess(&guess);
         assert_eq!(hangman.num_guesses, num_guesses - 1);
     }
+
+    #[test]
+    fn hangman_guess_char_with_multiple_occurences_all_are_noted() {
+        let word = "aabc";
+        let num_guesses = 2;
+        let mut hangman = Hangman::new(word, 2);
+        let guess = LowercaseAscii::try_from('a').unwrap();
+
+        hangman.guess(&guess);
+
+        let expected_obfuscated_word = "aa**";
+        assert_eq!(hangman.num_guesses, num_guesses);
+        assert_eq!(
+            hangman.construct_obfuscated_word(),
+            expected_obfuscated_word
+        );
+    }
 }
