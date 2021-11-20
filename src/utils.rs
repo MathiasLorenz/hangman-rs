@@ -41,14 +41,17 @@ pub struct LowercaseAscii {
 }
 
 impl TryFrom<char> for LowercaseAscii {
-    type Error = &'static str;
+    type Error = String;
 
     fn try_from(value: char) -> Result<Self, Self::Error> {
         let value = value.to_ascii_lowercase();
         if matches!(value, 'a'..='z') {
             Ok(Self { value })
         } else {
-            Err("Input has to be valid char a through z")
+            Err(format!(
+                "Input was {} but has to be valid char a through z",
+                value
+            ))
         }
     }
 }
