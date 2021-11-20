@@ -1,6 +1,7 @@
 # hangman-rs
 
-Small implementation of the 'hangman' game to practice Rust. Write the secret word (word to guess) in the `secret_word.txt` file and run the executable.
+Small implementation of the 'hangman' game to practice Rust. Write the secret word (word to guess) in a file called `secret_word.txt`
+in the same location as the program and run the executable.
 
 ## Rules
 
@@ -8,4 +9,6 @@ You need to guess the secret word in less than `num_guesses` guesses. Play by in
 
 ## Todo
 
-- Create internal struct in hangman for lowercase ascii letters? S.t. inside hangman these are always valid. Can bubble out errors?
+- Use `LowercaseAscii` in `Hangman::new()` as well
+- Make sure you can only guess a char wrong once.
+- Make path to (and name of maybe?) secrete word be passed in with program arguments
