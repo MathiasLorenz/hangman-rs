@@ -61,7 +61,10 @@ impl Hangman {
 
             let read_char = read_char.unwrap();
             match LowercaseAscii::try_from(read_char) {
-                Ok(read_char) => self.guess(&read_char),
+                Ok(guess) => {
+                    let guess_outcome = self.apply_guess(&guess);
+                    self.print_guess_outcome(&guess_outcome);
+                },
                 Err(err) => println!("{}", err),
             }
         }
@@ -73,9 +76,7 @@ impl Hangman {
         }
     }
 
-    fn guess(&mut self, guess: &LowercaseAscii) {
-        let guess_outcome = self.apply_guess(guess);
-
+    fn print_guess_outcome(&self, guess_outcome: &GuessOutcome) {
         match guess_outcome {
             GuessOutcome::AlreadyGuessed => println!("You have already guessed that. Try something else."),
             GuessOutcome::Hit => println!("Wuu you guessed a letter! No guess spent!"),
@@ -176,9 +177,10 @@ mod tests {
         let mut hangman = Hangman::new(word, num_guesses);
         let guess = LowercaseAscii::try_from('a').unwrap();
 
-        hangman.guess(&guess);
+        let guess_outcome = hangman.apply_guess(&guess);
 
         assert_eq!(hangman.num_guesses, num_guesses);
+        assert_eq!(guess_outcome, GuessOutcome::Hit);
     }
 
     #[test]
@@ -188,8 +190,10 @@ mod tests {
         let mut hangman = Hangman::new(word, num_guesses);
         let guess = LowercaseAscii::try_from('d').unwrap();
 
-        hangman.guess(&guess);
+        let guess_outcome = hangman.apply_guess(&guess);
+
         assert_eq!(hangman.num_guesses, num_guesses - 1);
+        assert_eq!(guess_outcome, GuessOutcome::Miss);
     }
 
     #[test]
@@ -199,7 +203,7 @@ mod tests {
         let mut hangman = Hangman::new(word, num_guesses);
         let guess = LowercaseAscii::try_from('a').unwrap();
 
-        hangman.guess(&guess);
+        hangman.apply_guess(&guess);
 
         let expected_obfuscated_word = "aa**";
         assert_eq!(hangman.num_guesses, num_guesses);
