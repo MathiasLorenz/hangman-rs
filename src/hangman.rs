@@ -18,6 +18,7 @@ enum GuessedStatus {
     NotGuessed,
 }
 
+#[derive(PartialEq, Eq, Debug)]
 enum GuessOutcome {
     AlreadyGuessed,
     Hit,
@@ -73,7 +74,7 @@ impl Hangman {
     }
 
     fn guess(&mut self, guess: &LowercaseAscii) {
-        let guess_outcome = self.check_guess(guess);
+        let guess_outcome = self.apply_guess(guess);
 
         match guess_outcome {
             GuessOutcome::AlreadyGuessed => println!("You have already guessed that. Try something else."),
@@ -85,7 +86,7 @@ impl Hangman {
         println!("{}", self.construct_obfuscated_word());
     }
 
-    fn check_guess(&mut self, guess: &LowercaseAscii) -> GuessOutcome {
+    fn apply_guess(&mut self, guess: &LowercaseAscii) -> GuessOutcome {
         let guess = guess.get_value();
         if self.guessed_chars.contains(&guess) {
             return GuessOutcome::AlreadyGuessed
@@ -172,7 +173,7 @@ mod tests {
     fn hangman_guess_correct_num_guesses_unchanged() {
         let word = "abc";
         let num_guesses = 2;
-        let mut hangman = Hangman::new(word, 2);
+        let mut hangman = Hangman::new(word, num_guesses);
         let guess = LowercaseAscii::try_from('a').unwrap();
 
         hangman.guess(&guess);
@@ -184,7 +185,7 @@ mod tests {
     fn hangman_guess_incorrect_num_guesses_minus_1() {
         let word = "abc";
         let num_guesses = 2;
-        let mut hangman = Hangman::new(word, 2);
+        let mut hangman = Hangman::new(word, num_guesses);
         let guess = LowercaseAscii::try_from('d').unwrap();
 
         hangman.guess(&guess);
@@ -195,7 +196,7 @@ mod tests {
     fn hangman_guess_char_with_multiple_occurrences_all_are_noted() {
         let word = "aabc";
         let num_guesses = 2;
-        let mut hangman = Hangman::new(word, 2);
+        let mut hangman = Hangman::new(word, num_guesses);
         let guess = LowercaseAscii::try_from('a').unwrap();
 
         hangman.guess(&guess);
@@ -206,5 +207,19 @@ mod tests {
             hangman.construct_obfuscated_word(),
             expected_obfuscated_word
         );
+    }
+
+    #[test]
+    fn hangman_apply_guess_already_tried_no_guess_used() {
+        let word = "abc";
+        let num_guesses = 2;
+        let mut hangman = Hangman::new(word, num_guesses);
+        let guess = LowercaseAscii::try_from('a').unwrap();
+
+        hangman.apply_guess(&guess);
+        let guess_outcome = hangman.apply_guess(&guess);
+
+        assert_eq!(hangman.num_guesses, num_guesses);
+        assert_eq!(guess_outcome, GuessOutcome::AlreadyGuessed);
     }
 }
