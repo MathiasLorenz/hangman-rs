@@ -78,10 +78,7 @@ impl Hangman {
         match guess_outcome {
             GuessOutcome::AlreadyGuessed => println!("You have already guessed that. Try something else."),
             GuessOutcome::Hit => println!("Wuu you guessed a letter! No guess spent!"),
-            GuessOutcome::Miss => {
-                self.num_guesses -= 1;
-                println!("Damn, the word does not contain that letter.. Try something else!");
-            },
+            GuessOutcome::Miss => { println!("Damn, the word does not contain that letter.. Try something else!") },
         }
 
         println!("You now have {} guesses left", self.num_guesses);
@@ -103,7 +100,11 @@ impl Hangman {
             }
         }
 
-        if did_guess { GuessOutcome::Hit } else { GuessOutcome::Miss }
+        if did_guess { GuessOutcome::Hit } 
+        else {
+            self.num_guesses -= 1;
+            GuessOutcome::Miss
+        }
     }
 
     fn is_dead(&self) -> bool {
