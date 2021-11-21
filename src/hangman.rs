@@ -1,8 +1,10 @@
 use crate::utils::{read_char_from_stdin, LowercaseAscii};
+use std::collections::HashSet;
 
 pub struct Hangman {
     word: Vec<LetterStatus>,
     num_guesses: u8,
+    guessed_chars: HashSet<char>,
 }
 
 struct LetterStatus {
@@ -14,6 +16,12 @@ struct LetterStatus {
 enum GuessedStatus {
     Guessed,
     NotGuessed,
+}
+
+enum GuessOutcome {
+    AlreadyGuessed,
+    Hit,
+    Miss,
 }
 
 impl Hangman {
@@ -35,6 +43,7 @@ impl Hangman {
         Hangman {
             word: w,
             num_guesses,
+            guessed_chars: HashSet::new(),
         }
     }
 
@@ -64,24 +73,37 @@ impl Hangman {
     }
 
     fn guess(&mut self, guess: &LowercaseAscii) {
+        let guess_outcome = self.check_guess(guess);
+
+        match guess_outcome {
+            GuessOutcome::AlreadyGuessed => println!("You have already guessed that. Try something else."),
+            GuessOutcome::Hit => println!("Wuu you guessed a letter! No guess spent!"),
+            GuessOutcome::Miss => {
+                self.num_guesses -= 1;
+                println!("Damn, the word does not contain that letter.. Try something else!");
+            },
+        }
+
+        println!("You now have {} guesses left", self.num_guesses);
+        println!("{}", self.construct_obfuscated_word());
+    }
+
+    fn check_guess(&mut self, guess: &LowercaseAscii) -> GuessOutcome {
+        let guess = guess.get_value();
+        if self.guessed_chars.contains(&guess) {
+            return GuessOutcome::AlreadyGuessed
+        }
+        self.guessed_chars.insert(guess);
+
         let mut did_guess = false;
         for c in &mut self.word {
-            if c.letter == guess.get_value() {
+            if c.letter == guess {
                 c.status = GuessedStatus::Guessed;
                 did_guess = true;
             }
         }
 
-        if did_guess {
-            println!("Nice, you guessed a letter! Therefore you did not use a guess.");
-        } else {
-            println!("Damn, you did not guess a letter and you lose a guess :(");
-            self.num_guesses -= 1;
-        }
-
-        println!("You now have {} guesses left", self.num_guesses);
-
-        println!("{}", self.construct_obfuscated_word());
+        if did_guess { GuessOutcome::Hit } else { GuessOutcome::Miss }
     }
 
     fn is_dead(&self) -> bool {

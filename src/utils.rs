@@ -36,6 +36,7 @@ pub fn read_secret_word(filename: &str) -> Result<String, anyhow::Error> {
     Ok(word.to_owned())
 }
 
+#[derive(Eq, PartialEq, Hash)]
 pub struct LowercaseAscii {
     value: char,
 }
