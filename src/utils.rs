@@ -1,4 +1,3 @@
-use anyhow::Result;
 use std::error;
 use std::fmt;
 use std::fs;
@@ -26,7 +25,7 @@ impl fmt::Display for NoWordFound {
 
 impl error::Error for NoWordFound {}
 
-pub fn read_secret_word(filename: &str) -> Result<String, anyhow::Error> {
+pub fn read_secret_word(filename: &str) -> anyhow::Result<String> {
     let contents = fs::read_to_string(filename)?;
 
     let word = contents

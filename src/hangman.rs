@@ -26,11 +26,11 @@ enum GuessOutcome {
 }
 
 impl Hangman {
-    pub fn new(word: &str, num_guesses: u8) -> Self {
+    pub fn new(word: &str, num_guesses: u8) -> anyhow::Result<Self> {
         let word = word.to_ascii_lowercase();
         // Did create a solution with .map() and .scan() in the below but that was super ugly
         if !word.chars().all(|c| matches!(c, 'a'..='z')) {
-            panic!("Cannot play hangman with characters that are not letters :(");
+            anyhow::bail!("Cannot play hangman with characters that are not letters :(");
         }
 
         let w: Vec<_> = word
@@ -41,11 +41,11 @@ impl Hangman {
             })
             .collect();
 
-        Hangman {
+        Ok(Hangman {
             word: w,
             num_guesses,
             guessed_chars: HashSet::new(),
-        }
+        })
     }
 
     pub fn play(&mut self) {
@@ -136,7 +136,7 @@ mod tests {
     #[test]
     fn hangman_new_simple_word_is_read_properly() {
         let word = "sup";
-        let hangman = Hangman::new(word, 2);
+        let hangman = Hangman::new(word, 2).unwrap();
         let hangman_word = extract_word_from_letterstatus(hangman.word);
 
         assert_eq!(word, hangman_word);
@@ -146,24 +146,26 @@ mod tests {
     fn hangman_new_word_with_uppercase_is_translated_to_lowercase() {
         let word = "hellOwoM";
         let word_lowercase = "hellowom";
-        let hangman = Hangman::new(word, 2);
+        let hangman = Hangman::new(word, 2).unwrap();
         let hangman_word = extract_word_from_letterstatus(hangman.word);
 
         assert_eq!(word_lowercase, hangman_word);
     }
 
     #[test]
-    #[should_panic]
-    fn hangman_new_with_digit_panics() {
+    fn hangman_new_with_digit_returns_error() {
         let word = "2";
-        let _ = Hangman::new(word, 2);
+        let hangman = Hangman::new(word, 2);
+
+        assert_eq!(hangman.is_err(), true);
     }
 
     #[test]
-    #[should_panic]
-    fn hangman_new_strange_unicode_alphabetic_panics() {
+    fn hangman_new_strange_unicode_alphabetic_returns_error() {
         let word = "こ";
-        Hangman::new(word, 2);
+        let hangman = Hangman::new(word, 2);
+
+        assert_eq!(hangman.is_err(), true);
     }
 
     fn extract_word_from_letterstatus(letter_status: Vec<LetterStatus>) -> String {
@@ -174,7 +176,7 @@ mod tests {
     fn hangman_guess_correct_num_guesses_unchanged() {
         let word = "abc";
         let num_guesses = 2;
-        let mut hangman = Hangman::new(word, num_guesses);
+        let mut hangman = Hangman::new(word, num_guesses).unwrap();
         let guess = LowercaseAscii::try_from('a').unwrap();
 
         let guess_outcome = hangman.apply_guess(&guess);
@@ -187,7 +189,7 @@ mod tests {
     fn hangman_guess_incorrect_num_guesses_minus_1() {
         let word = "abc";
         let num_guesses = 2;
-        let mut hangman = Hangman::new(word, num_guesses);
+        let mut hangman = Hangman::new(word, num_guesses).unwrap();
         let guess = LowercaseAscii::try_from('d').unwrap();
 
         let guess_outcome = hangman.apply_guess(&guess);
@@ -200,7 +202,7 @@ mod tests {
     fn hangman_guess_char_with_multiple_occurrences_all_are_noted() {
         let word = "aabc";
         let num_guesses = 2;
-        let mut hangman = Hangman::new(word, num_guesses);
+        let mut hangman = Hangman::new(word, num_guesses).unwrap();
         let guess = LowercaseAscii::try_from('a').unwrap();
 
         hangman.apply_guess(&guess);
@@ -217,7 +219,7 @@ mod tests {
     fn hangman_apply_guess_already_tried_no_guess_used() {
         let word = "abc";
         let num_guesses = 2;
-        let mut hangman = Hangman::new(word, num_guesses);
+        let mut hangman = Hangman::new(word, num_guesses).unwrap();
         let guess = LowercaseAscii::try_from('a').unwrap();
 
         hangman.apply_guess(&guess);

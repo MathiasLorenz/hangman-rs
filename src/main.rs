@@ -18,7 +18,7 @@ fn main() {
         .expect("Could not parse num_guesses from input");
 
     let secret_word = utils::read_secret_word("secret_word.txt").unwrap();
-    let mut hangman = hangman::Hangman::new(&secret_word, num_guesses);
+    let mut hangman = hangman::Hangman::new(&secret_word, num_guesses).unwrap();
 
     hangman.play();
 }
