@@ -10,5 +10,4 @@ You need to guess the secret word in less than `num_guesses` guesses. Play by in
 ## Todo
 
 - Use `LowercaseAscii` in `Hangman::new()` as well
-- Make sure you can only guess a char wrong once.
 - Make path to (and name of maybe?) secrete word be passed in with program arguments
