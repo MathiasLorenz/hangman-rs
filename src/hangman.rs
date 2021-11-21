@@ -192,7 +192,7 @@ mod tests {
     }
 
     #[test]
-    fn hangman_guess_char_with_multiple_occurences_all_are_noted() {
+    fn hangman_guess_char_with_multiple_occurrences_all_are_noted() {
         let word = "aabc";
         let num_guesses = 2;
         let mut hangman = Hangman::new(word, 2);
