@@ -1,3 +1,4 @@
+use anyhow::{Result, bail};
 use crate::utils::{read_char_from_stdin, LowercaseAscii};
 use std::collections::HashSet;
 
@@ -26,11 +27,11 @@ enum GuessOutcome {
 }
 
 impl Hangman {
-    pub fn new(word: &str, num_guesses: u8) -> anyhow::Result<Self> {
+    pub fn new(word: &str, num_guesses: u8) -> Result<Self> {
         let word = word.to_ascii_lowercase();
         // Did create a solution with .map() and .scan() in the below but that was super ugly
         if !word.chars().all(|c| matches!(c, 'a'..='z')) {
-            anyhow::bail!("Cannot play hangman with characters that are not letters :(");
+            bail!("Cannot play hangman with characters that are not letters :(");
         }
 
         let w: Vec<_> = word
