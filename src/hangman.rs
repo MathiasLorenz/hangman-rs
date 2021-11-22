@@ -1,5 +1,5 @@
-use anyhow::{Result, bail};
 use crate::utils::{read_char_from_stdin, LowercaseAscii};
+use anyhow::{bail, Result};
 use std::collections::HashSet;
 
 pub struct Hangman {
@@ -65,7 +65,7 @@ impl Hangman {
                 Ok(guess) => {
                     let guess_outcome = self.apply_guess(&guess);
                     self.print_guess_outcome(&guess_outcome);
-                },
+                }
                 Err(err) => println!("{}", err),
             }
         }
@@ -79,9 +79,13 @@ impl Hangman {
 
     fn print_guess_outcome(&self, guess_outcome: &GuessOutcome) {
         match guess_outcome {
-            GuessOutcome::AlreadyGuessed => println!("You have already guessed that. Try something else."),
+            GuessOutcome::AlreadyGuessed => {
+                println!("You have already guessed that. Try something else.");
+            }
             GuessOutcome::Hit => println!("Wuu you guessed a letter! No guess spent!"),
-            GuessOutcome::Miss => { println!("Damn, the word does not contain that letter.. Try something else!") },
+            GuessOutcome::Miss => {
+                println!("Damn, the word does not contain that letter.. Try something else!");
+            }
         }
 
         println!("You now have {} guesses left", self.num_guesses);
@@ -91,7 +95,7 @@ impl Hangman {
     fn apply_guess(&mut self, guess: &LowercaseAscii) -> GuessOutcome {
         let guess = guess.get_value();
         if self.guessed_chars.contains(&guess) {
-            return GuessOutcome::AlreadyGuessed
+            return GuessOutcome::AlreadyGuessed;
         }
         self.guessed_chars.insert(guess);
 
@@ -103,8 +107,9 @@ impl Hangman {
             }
         }
 
-        if did_guess { GuessOutcome::Hit } 
-        else {
+        if did_guess {
+            GuessOutcome::Hit
+        } else {
             self.num_guesses -= 1;
             GuessOutcome::Miss
         }
